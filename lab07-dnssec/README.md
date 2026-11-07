@@ -1,5 +1,5 @@
-﻿# Lab 07 — DNSSEC
+# Lab 07 — DNSSEC
 
-Phụ trách: Hải
+Phụ trách: Khoa
 
 Nội dung lab sẽ được bổ sung.

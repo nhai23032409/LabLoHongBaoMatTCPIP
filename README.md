@@ -6,13 +6,13 @@ Repository thực hành các lỗ hổng cơ bản trong protocol stack TCP/IP.
 
 | Lab | Chủ đề | Phụ trách |
 |---|---|---|
-| 01 | TCP Sequence Number Prediction | Hải |
-| 02 | IP Source Routing (LSRR/SSRR) | Khoa |
-| 03 | ICMP Tunneling | Khoa |
+| 01 | TCP Sequence Number Prediction | Khoa |
+| 02 | IP Source Routing (LSRR/SSRR) | Hải |
+| 03 | ICMP Tunneling | Hải |
 | 04 | Smurf Attack | Hạnh |
 | 05 | ICMP Redirect (MITM) | Hạnh |
 | 06 | Teardrop | Hạnh |
-| 07 | DNSSEC | Hải |
+| 07 | DNSSEC | Khoa |
 
 ## Môi trường
 
@@ -27,13 +27,13 @@ phạm vi cho phép.
 
 ## Cấu trúc
 
-- `lab01-tcp-seq/` — Hải
-- `lab02-source-routing/` — Khoa
-- `lab03-icmp-tunneling/` — Khoa
+- `lab01-tcp-seq/` — Khoa
+- `lab02-source-routing/` — Hải
+- `lab03-icmp-tunneling/` — Hải
 - `lab04-smurf/` — Hạnh
 - `lab05-icmp-redirect/` — Hạnh
 - `lab06-teardrop/` — Hạnh
-- `lab07-dnssec/` — Hải
+- `lab07-dnssec/` — Khoa
 
 Mỗi thành viên chỉ sửa thư mục lab được phân công. Nhánh `main` dùng để tích
 hợp; công việc mới thực hiện trên nhánh riêng và mở Pull Request vào `main`.

@@ -16,39 +16,39 @@
 
 | Người | Nhiệm vụ | Khối lượng |
 |-------|----------|-----------|
-| **Khoa** | **Dựng repo** + Lab02 + Lab03 | ~7.5 |
-| **Hải**  | Lab01 + Lab07 | ~8 |
+| **Hải** | **Dựng repo** + Lab02 + Lab03 | ~7.5 |
+| **Khoa**  | Lab01 + Lab07 | ~8 |
 | **Hạnh** | Lab04 + Lab05 + Lab06 | ~8 |
 
-Khoa nhận ít lab hơn một chút vì gánh thêm phần dựng repo (việc một lần, nhưng tốn công). Hai lab Khoa giữ
-(02, 03) đều dùng chung topo `veth pair` + Scapy, làm liền mạch nên hiệu quả. Hải ôm Lab07 (DNSSEC — nặng nhất)
+Hải nhận ít lab hơn một chút vì gánh thêm phần dựng repo (việc một lần, nhưng tốn công). Hai lab Hải giữ
+(02, 03) đều dùng chung topo `veth pair` + Scapy, làm liền mạch nên hiệu quả. Khoa ôm Lab07 (DNSSEC — nặng nhất)
 kèm Lab01 (nhẹ hơn). Hạnh gom 3 lab nhưng gồm 2 lab dễ (04, 06) + 1 lab khó (05).
 
 ## 2) Chống đụng code của nhau
 
 **Nguyên tắc: mỗi người sở hữu trọn vẹn từng lab → mỗi lab một thư mục riêng → không ai sửa file của người khác.**
 
-Cấu trúc repo Khoa dựng:
+Cấu trúc repo Hải dựng:
 
 ```
 LabLoHongBaoMatTCPIP/
-├─ README.md               (Khoa)
+├─ README.md               (Hải)
 ├─ .gitignore              (bỏ *.pid, *.key, /tmp artifacts)
-├─ lab01-tcp-seq/          → Hải
-├─ lab02-source-routing/   → Khoa
-├─ lab03-icmp-tunneling/   → Khoa
+├─ lab01-tcp-seq/          → Khoa
+├─ lab02-source-routing/   → Hải
+├─ lab03-icmp-tunneling/   → Hải
 ├─ lab04-smurf/            → Hạnh
 ├─ lab05-icmp-redirect/    → Hạnh
 ├─ lab06-teardrop/         → Hạnh
-└─ lab07-dnssec/           → Hải
+└─ lab07-dnssec/           → Khoa
 ```
 
 - **Mỗi lab tự chứa bản `setup_*.sh` riêng** (không tạo file dùng chung). Lab 01/02/03/06 cùng dùng
   `setup_pair.sh` giống nhau, nhưng để *mỗi thư mục một bản copy* — tránh file chung bị nhiều người sửa cùng lúc.
 - **Git workflow**: `main` chỉ để gộp; mỗi người làm trên nhánh riêng theo lab, ví dụ `hai/lab07`,
   `hanh/lab05`, mở PR vào `main`. Vì không trùng thư mục nên PR gần như không bao giờ conflict.
-- Khoa làm **README gốc** (mục lục + hướng dẫn chạy chung); mỗi người tự viết `README.md` trong thư mục lab
+- Hải làm **README gốc** (mục lục + hướng dẫn chạy chung); mỗi người tự viết `README.md` trong thư mục lab
   của mình.
 
-**Việc đầu tiên của Khoa**: tạo repo, đẩy khung thư mục rỗng (7 folder + README + .gitignore) lên `main`,
-mời Hạnh & Hải làm collaborator. Xong là hai bạn kia clone và bắt tay vào lab của mình ngay.
+**Việc đầu tiên của Hải**: tạo repo, đẩy khung thư mục rỗng (7 folder + README + .gitignore) lên `main`,
+mời Hạnh & Khoa làm collaborator. Xong là hai bạn kia clone và bắt tay vào lab của mình ngay.

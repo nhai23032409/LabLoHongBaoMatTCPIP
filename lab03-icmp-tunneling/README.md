@@ -1,5 +1,5 @@
-﻿# Lab 03 — ICMP Tunneling
+# Lab 03 — ICMP Tunneling
 
-Phụ trách: Khoa
+Phụ trách: Hải
 
 Nội dung lab sẽ được bổ sung.
