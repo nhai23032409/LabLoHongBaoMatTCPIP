@@ -1,0 +1,21 @@
+﻿# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Runtime and temporary files
+*.pid
+*.log
+*.key
+*.pcap
+*.pcapng
+tmp/
+temp/
+artifacts/
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
