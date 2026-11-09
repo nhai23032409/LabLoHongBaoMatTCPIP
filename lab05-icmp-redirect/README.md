@@ -96,48 +96,58 @@ sudo bash mitm_forward.sh
 Nếu **bỏ qua** bước này, sau tấn công victim sẽ **mất kết nối** tới `10.0.1.5` (attacker nhận gói
 nhưng không chuyển tiếp) — vẫn chứng minh được route bị đổi, nhưng không phải MITM "trong suốt".
 
-### Bước 4 — Attacker mở quan sát *(Terminal A — giữ chạy)*
+> ⚠️ **Quan trọng — kernel hiện đại (Ubuntu 24.04, kernel 6.x) rất "khó tính":** nó chỉ chịu nhận
+> redirect khi (a) victim **đang có luồng chạy liên tục** tới đích, và (b) redirect được gửi **lặp
+> vài lần**. Vì vậy các bước dưới dùng **`ping` liên tục (không `-c1`)** và `redirect_attack.py` đã
+> được chỉnh để **tự bắn 10 lần** (`--repeat 10`). Cách "ping 1 phát + bắn 1 redirect" như đề gốc
+> thường **không ăn** trên kernel mới.
+
+### Bước 4 — Mở 2 cửa sổ "giữ chạy"
 
 ```bash
+# Terminal A (attacker) — quan sát lưu lượng bị chuyển hướng:
 sudo ip netns exec atk tcpdump -i atk0 -nn host 10.0.1.5
+
+# Terminal B (victim) — tạo luồng LIÊN TỤC tới đích (ĐỪNG -c1, cứ để chạy):
+sudo ip netns exec vic ping 10.0.1.5
 ```
 
-### Bước 5 — Tung đòn ICMP Redirect
+### Bước 5 — Tung đòn ICMP Redirect *(Terminal C)*
 
 ```bash
-# (a) Victim tạo luồng tới 10.0.1.5 để kernel có route "sống" mà áp redirect:
-sudo ip netns exec vic ping -c1 10.0.1.5
-
-# (b) Attacker gửi redirect giả:
+# Trong khi Terminal B vẫn đang ping, attacker bắn redirect lặp 10 lần:
 sudo ip netns exec atk python3 redirect_attack.py
+# (muốn bắn nhiều hơn: ... redirect_attack.py --repeat 20)
 ```
 
 ### Bước 6 — Kiểm chứng route đã bị sửa
 
 ```bash
 sudo bash check_route.sh
-# ✔ Mong đợi: "10.0.1.5 via 10.0.0.66 dev vic0" — giờ đi qua ATTACKER.
-
-# Tạo thêm lưu lượng -> Terminal A (tcpdump của attacker) bắt được gói của victim:
-sudo ip netns exec vic ping -c3 10.0.1.5
 ```
 
-**✔ Kết quả:** `check_route` hiển thị `via 10.0.0.66`; tcpdump ở attacker thấy lưu lượng victim gửi
-tới `10.0.1.5` ⇒ attacker đã chèn vào đường đi (MITM).
+**✔ Kết quả:** `ip route get 10.0.1.5` hiển thị **`via 10.0.0.66 dev vic0 ... cache <redirected>
+expires ...sec`** — route đã trỏ qua ATTACKER. Đồng thời **Terminal A** (tcpdump) bắt được cả
+echo-request lẫn echo-reply của victim đi xuyên `atk0`, và **Terminal B vẫn ping được** (ttl=63)
+⇒ attacker đã chèn vào đường đi mà victim không mất kết nối (MITM trong suốt).
 
 > 📌 **Lưu ý kernel mới:** `ip route show cache` thường **rỗng** trên kernel hiện đại (route cache đã
 > bị bỏ từ ~3.6). Phép kiểm tra tin cậy là **`ip route get 10.0.1.5`** — nó phản ánh "exception" do
-> redirect tạo ra. Vì vậy `check_route.sh` dựa chủ yếu vào `ip route get`.
+> redirect tạo ra (`cache <redirected>`). Vì vậy `check_route.sh` dựa chủ yếu vào `ip route get`.
 
 ### Bước 7 — Bật phòng thủ và so sánh
 
 ```bash
-sudo bash defense.sh                         # victim: accept_redirects=0 + flush cache
-sudo ip netns exec vic ping -c1 10.0.1.5     # tạo luồng
-sudo ip netns exec atk python3 redirect_attack.py   # gửi lại redirect
+sudo bash defense.sh          # victim: accept_redirects=0 + flush cache (xoá exception cũ)
+
+# Terminal B vẫn đang ping; bắn lại redirect đúng kiểu như Bước 5:
+sudo ip netns exec atk python3 redirect_attack.py
 sudo bash check_route.sh
-# ✔ Mong đợi: vẫn "via 10.0.0.1" — redirect giả bị bỏ qua.
+# ✔ Mong đợi: vẫn "via 10.0.0.1" — redirect giả bị bỏ qua, route KHÔNG đổi.
 ```
+
+> 💡 Nếu Terminal B (ping liên tục) đã tắt sau Bước 6, hãy bật lại trước khi làm Bước 7 để test
+> công bằng (vẫn phải có luồng chạy thì mới biết kernel có "cắn câu" redirect hay không).
 
 ### Bước 8 — Dọn dẹp
 
