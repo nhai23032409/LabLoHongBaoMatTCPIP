@@ -1,0 +1,12 @@
+; secure.lab.forged.zone - Zone GIA MAO do may 'attacker' (rogue authoritative)
+; phuc vu. KHONG ky DNSSEC, va tro bank.secure.lab sang IP cua ke tan cong.
+; Muc dich: minh hoa resolver xac thuc DNSSEC se TU CHOI (SERVFAIL/bogus) du
+; lieu nay vi khong co chu ky hop le khop voi trust anchor.
+$TTL 3600
+@       IN  SOA ns.secure.lab. admin.secure.lab. (
+                2026110999  ; Serial (cao hon ban that)
+                3600 900 604800 300 )
+@       IN  NS   ns.secure.lab.
+ns      IN  A    10.0.0.10
+www     IN  A    10.0.0.100
+bank    IN  A    10.0.0.66     ; <-- GIA MAO: tro sang may ke tan cong 10.0.0.66
