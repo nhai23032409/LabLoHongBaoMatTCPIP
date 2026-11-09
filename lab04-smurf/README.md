@@ -94,8 +94,12 @@ sudo bash vuln_on.sh        # amp1-3 bật trả lời ping broadcast
 ### Bước 3 — Mở quan sát tại nạn nhân *(Terminal A — giữ chạy)*
 
 ```bash
-sudo ip netns exec vic tcpdump -i vic0 -nn icmp
+sudo ip netns exec vic tcpdump -i vic0 -nn -l icmp
 ```
+
+> 💡 **Chú ý cờ `-l`** (line-buffered): nếu thiếu, tcpdump **gom kết quả trong bộ đệm và chỉ xổ ra
+> màn hình khi bạn Ctrl+C** — dễ tưởng nhầm là "không bắt được gói". Với `-l`, từng dòng hiện ngay
+> khi có gói. (Đề gốc không có `-l`, nên hay gặp hiện tượng phải Ctrl+C mới thấy.)
 
 ### Bước 4 — Phát động Smurf từ attacker *(Terminal B)*
 
@@ -134,6 +138,21 @@ nhân** (hệ số ~0x). Đây chính là cấu hình mặc định an toàn c�
 ```bash
 sudo bash cleanup.sh
 ```
+
+### Xử lý sự cố: "attacker bắn xong nhưng Terminal A không thấy gì"
+
+**Nguyên nhân thường gặp nhất là tcpdump buffering, KHÔNG phải mất gói.** tcpdump gom output trong
+bộ đệm; với một loạt gói ngắn rồi im lặng, nó không xổ ra màn hình cho tới khi bạn **Ctrl+C**. Gói
+vẫn được bắt real-time.
+
+- **Khắc phục:** thêm cờ **`-l`** vào lệnh tcpdump (xem Bước 3) để in từng dòng ngay lập tức.
+- **Kiểm chứng amp có trả lời broadcast không** (sau `vuln_on.sh`):
+  ```bash
+  sudo ip netns exec atk ping -b -c2 10.0.0.255
+  ```
+  Phải thấy reply từ `10.0.0.11/.12/.13` → topo & amp đều ổn.
+- **`smurf.py` nằm trên Windows, chạy trong VM:** sau mỗi lần sửa file ở Windows, phải đồng bộ bản
+  mới vào VM (shared folder / `git pull` / copy lại) rồi mới chạy — nếu không VM vẫn chạy bản cũ.
 
 ---
 

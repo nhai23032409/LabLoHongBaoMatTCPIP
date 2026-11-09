@@ -14,7 +14,7 @@ TMP="/tmp/smurf_count.txt"
 
 echo "[i] Bat tcpdump tai nan nhan (vic) trong ${SECS}s, chi dem echo-reply..."
 ip netns exec vic timeout "${SECS}" \
-  tcpdump -i vic0 -nn 'icmp[icmptype]==icmp-echoreply' 2>/dev/null > "${TMP}" &
+  tcpdump -i vic0 -nn -l 'icmp[icmptype]==icmp-echoreply' 2>/dev/null > "${TMP}" &
 TPID=$!
 
 sleep 1
