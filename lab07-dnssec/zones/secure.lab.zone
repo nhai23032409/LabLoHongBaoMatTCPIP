@@ -1,0 +1,13 @@
+; secure.lab.zone - Zone THAT (se duoc ky DNSSEC tren may 'auth').
+; Serial dang YYYYMMDDnn - tang moi khi sua.
+$TTL 3600
+@       IN  SOA ns.secure.lab. admin.secure.lab. (
+                2026110901  ; Serial
+                3600        ; Refresh
+                900         ; Retry
+                604800      ; Expire
+                300 )       ; Minimum/Negative TTL
+@       IN  NS   ns.secure.lab.
+ns      IN  A    10.0.0.10
+www     IN  A    10.0.0.100
+bank    IN  A    10.0.0.101
